@@ -1,8 +1,9 @@
 name = "credits"
 main = "src/index.ts"
-compatibility_date = "2024-03-20"
+compatibility_date = "2024-04-27"
+node_compat = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "ecommerce-db"
+database_name = "credits-db"
 database_id = "522e3bc3-d05f-4abe-8478-e8452a44a20a"
