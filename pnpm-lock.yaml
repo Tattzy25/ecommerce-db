@@ -10,13 +10,19 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: ^0.45.2
-        version: 0.45.2
+        version: 0.45.2(@cloudflare/workers-types@4.20260426.1)
     devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20260426.1
+        version: 4.20260426.1
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
 
 packages:
+
+  '@cloudflare/workers-types@4.20260426.1':
+    resolution: {integrity: sha512-cBYeQaWwv/jFV8ualmwp6wIxmAf0rDe2DPPQwPbslKmPHqgv861YpAvm45r05K40QboZgxNQVIPgNkmtHqZeJQ==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -612,6 +618,8 @@ packages:
 
 snapshots:
 
+  '@cloudflare/workers-types@4.20260426.1': {}
+
   '@drizzle-team/brocli@0.10.2': {}
 
   '@esbuild-kit/core-utils@3.3.2':
@@ -855,7 +863,9 @@ snapshots:
       esbuild: 0.25.12
       tsx: 4.21.0
 
-  drizzle-orm@0.45.2: {}
+  drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260426.1):
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20260426.1
 
   esbuild@0.18.20:
     optionalDependencies:
