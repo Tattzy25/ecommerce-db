@@ -1,7 +1,7 @@
 name = "credits"
-main = "src/index.ts" # <-- This MUST point to the .ts file
+main = "src/index.ts"
 compatibility_date = "2024-04-27"
-node_compat = true
+compatibility_flags = [ "nodejs_compat" ]
 
 [[d1_databases]]
 binding = "DB"
