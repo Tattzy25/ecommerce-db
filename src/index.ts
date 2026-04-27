@@ -1,76 +1,214 @@
-import { Kysely } from "kysely";
-import { D1Dialect } from "kysely-d1";
-import { Database } from "./types";
-
-export const PRICING = {
-  IMAGE_GEN: 1,
-  BATCH_IMAGE_GEN: 4,
-  MODEL_TRAINING: 100,
-  FACETIME_CALL: 200,
-} as const;
-
-export interface Env {
-  DB: D1Database;
-}
-
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // 1. Initialize Kysely with Cloudflare's D1 Dialect
-    const db = new Kysely<Database>({
-      dialect: new D1Dialect({ database: env.DB }),
-    });
-
-    const url = new URL(request.url);
-
-    if (url.pathname === "/api/deduct" && request.method === "POST") {
-      const { userId, action, jobId } = (await request.json()) as any;
-      const cost = PRICING[action as keyof typeof PRICING];
-
-      if (!cost)
-        return Response.json({ error: "Invalid action" }, { status: 400 });
-
-      try {
-        // 2. Kysely Transaction
-        const remainingBalance = await db.transaction().execute(async (tx) => {
-          // The Atomic Update: UPDATE users SET balance = balance - cost WHERE id = ? AND balance >= cost
-          const updatedUser = await tx
-            .updateTable("users")
-            .set((eb) => ({
-              credit_balance: eb("credit_balance", "-", cost),
-            }))
-            .where("id", "=", userId)
-            .where("credit_balance", ">=", cost) // Prevents overdrafts instantly
-            .returning("credit_balance")
-            .executeTakeFirst();
-
-          if (!updatedUser) {
-            throw new Error("Insufficient credits or user not found");
-          }
-
-          // Insert Ledger Record
-          await tx
-            .insertInto("credit_ledger")
-            .values({
-              id: crypto.randomUUID(),
-              user_id: userId,
-              amount: -cost,
-              action_type: action,
-              reference_id: jobId || null,
-            })
-            .execute();
-
-          return updatedUser.credit_balance;
-        });
-
-        return Response.json({ success: true, remaining: remainingBalance });
-      } catch (e: any) {
-        return Response.json(
-          { success: false, error: e.message },
-          { status: 400 },
-        );
-      }
-    }
-
-    return new Response("Not found", { status: 404 });
+[
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "2792",
+    severity: 8,
+    message:
+      "Cannot find module 'kysely'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?",
+    source: "ts",
+    startLineNumber: 1,
+    startColumn: 35,
+    endLineNumber: 1,
+    endColumn: 43,
+    origin: "extHost1",
   },
-};
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "2792",
+    severity: 8,
+    message:
+      "Cannot find module 'kysely-d1'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?",
+    source: "ts",
+    startLineNumber: 2,
+    startColumn: 27,
+    endLineNumber: 2,
+    endColumn: 38,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8006",
+    severity: 8,
+    message: "'interface' declarations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 5,
+    startColumn: 18,
+    endLineNumber: 5,
+    endColumn: 26,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8006",
+    severity: 8,
+    message: "'interface' declarations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 10,
+    startColumn: 18,
+    endLineNumber: 10,
+    endColumn: 27,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8006",
+    severity: 8,
+    message: "'interface' declarations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 17,
+    startColumn: 18,
+    endLineNumber: 17,
+    endColumn: 35,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8016",
+    severity: 8,
+    message: "Type assertion expressions can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 32,
+    startColumn: 6,
+    endLineNumber: 32,
+    endColumn: 11,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8006",
+    severity: 8,
+    message: "'interface' declarations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 34,
+    startColumn: 18,
+    endLineNumber: 34,
+    endColumn: 21,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8010",
+    severity: 8,
+    message: "Type annotations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 40,
+    startColumn: 24,
+    endLineNumber: 40,
+    endColumn: 31,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8010",
+    severity: 8,
+    message: "Type annotations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 40,
+    startColumn: 38,
+    endLineNumber: 40,
+    endColumn: 41,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8010",
+    severity: 8,
+    message: "Type annotations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 40,
+    startColumn: 48,
+    endLineNumber: 40,
+    endColumn: 64,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8010",
+    severity: 8,
+    message: "Type annotations can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 40,
+    startColumn: 67,
+    endLineNumber: 40,
+    endColumn: 84,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8016",
+    severity: 8,
+    message: "Type assertion expressions can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 48,
+    startColumn: 63,
+    endLineNumber: 48,
+    endColumn: 66,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "8016",
+    severity: 8,
+    message: "Type assertion expressions can only be used in TypeScript files.",
+    source: "ts",
+    startLineNumber: 49,
+    startColumn: 36,
+    endLineNumber: 49,
+    endColumn: 56,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "2365",
+    severity: 8,
+    message:
+      "Operator '>' cannot be applied to types 'boolean' and '{ dialect: any; }'.",
+    source: "ts",
+    startLineNumber: 56,
+    startColumn: 16,
+    endLineNumber: 58,
+    endColumn: 7,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "2693",
+    severity: 8,
+    message:
+      "'Database' only refers to a type, but is being used as a value here.",
+    source: "ts",
+    startLineNumber: 56,
+    startColumn: 27,
+    endLineNumber: 56,
+    endColumn: 35,
+    origin: "extHost1",
+  },
+  {
+    resource: "/credits/worker.js",
+    owner: "typescript",
+    code: "2339",
+    severity: 8,
+    message: "Property 'transaction' does not exist on type 'boolean'.",
+    source: "ts",
+    startLineNumber: 61,
+    startColumn: 39,
+    endLineNumber: 61,
+    endColumn: 50,
+    origin: "extHost1",
+  },
+];
